@@ -4,8 +4,7 @@ date: 2022-03-27
 layout: post
 mathjax: true
 category:
-- C++
-- ABI
+- oth
 ---
 Ref: [https://itanium-cxx-abi.github.io/cxx-abi/abi.html](1)
 

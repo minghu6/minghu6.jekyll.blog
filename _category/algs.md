@@ -1,6 +1,6 @@
 ---
 category: [algs]
-hue: var(--c-themeHuePurple)
+hue: var(--c-themeHueOrange)
 title: Algorithm
 description:
 ---

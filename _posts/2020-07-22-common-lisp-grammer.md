@@ -4,7 +4,7 @@ date: 2020-07-22
 layout: post
 mathjax: true
 category:
-- Common Lisp
+- lang
 ---
 1. 列表和点对的区别：
    

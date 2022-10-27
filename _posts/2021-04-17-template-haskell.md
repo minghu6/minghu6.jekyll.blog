@@ -4,8 +4,7 @@ date: 2021-04-17
 layout: post
 mathjax: true
 category:
-- Haskell
-- Template Haskell
+- lang
 ---
 默认工作版本 `ghc 8.10.4`
 

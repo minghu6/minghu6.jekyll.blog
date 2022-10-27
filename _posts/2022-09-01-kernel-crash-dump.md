@@ -4,7 +4,7 @@ date: 2022-09-01
 layout: post
 mathjax: true
 category:
-- Kernel
+- os
 ---
 ## Ubuntu
 

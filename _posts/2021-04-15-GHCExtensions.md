@@ -4,8 +4,7 @@ date: 2021-04-15
 layout: post
 mathjax: true
 category:
-- Haskell
-- GHC
+- lang
 ---
 [`AllowAmbiguousTypes`](https://downloads.haskell.org/~ghc/8.10.4/docs/html/users_guide/glasgow_exts.html#extension-AllowAmbiguousTypes)
 

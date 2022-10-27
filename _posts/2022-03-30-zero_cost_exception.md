@@ -4,8 +4,7 @@ date: 2022-03-30
 layout: post
 mathjax: true
 category:
-- Exception
-- Compiler
+- lang
 ---
 ## Related Header Definition
 

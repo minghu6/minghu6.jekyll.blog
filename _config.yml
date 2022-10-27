@@ -27,16 +27,18 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  minghu6
 
 # Build settings
-theme: jekyll-theme-simplex
+# theme: jekyll-theme-simplex-v2
 plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
 
-
 logo_img: /minghu6.jpeg
 copyright: © minghu6
 
+sass:
+    style: compressed
+  
 collections:
     category:
         output: true
@@ -51,3 +53,8 @@ defaults:
     values:
       layout: "category"
 
+exclude:
+  - README.md
+  - migrate_doc
+  - publish_site
+  

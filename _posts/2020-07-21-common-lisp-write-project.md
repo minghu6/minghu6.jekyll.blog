@@ -4,7 +4,7 @@ date: 2020-07-21
 layout: post
 mathjax: true
 category:
-- Common Lisp
+- lang
 ---
 ## 参考
 
@@ -62,6 +62,17 @@ https://www.quicklisp.org/beta/#installation
 ### Step-n 编写测试
 
 参考https://turtleware.eu/posts/Tutorial-Working-with-FiveAM.html
+
+## Step-n. (SBCL) 导出镜像文件：
+
+````commonlisp
+;;启动repl后加载程序环境
+(load "php-syntax.lisp")
+;;环境保存到镜像
+(save-lisp-and-die "core-php-synax") 
+````
+
+加载镜像 `rlwrap sbcl --core core-php-synax`
 
 ### Step-n 发布到QuickLisp项目
 

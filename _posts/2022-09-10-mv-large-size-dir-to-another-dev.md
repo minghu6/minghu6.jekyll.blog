@@ -4,8 +4,7 @@ date: 2022-09-10
 layout: post
 mathjax: true
 category:
-- Linux
-- FS
+- os
 ---
 ## 问题背景
 

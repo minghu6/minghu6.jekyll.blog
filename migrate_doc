@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+FROM_DIR=~/coding/blog/blog-draft/normal-files
+
+convmdblog $FROM_DIR ./_posts d j

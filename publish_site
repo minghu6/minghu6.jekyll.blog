@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+init() {
+    git init
+    git add .
+    git remote add origin git@github.com:minghu6/minghu6.github.io.git
+    git ps -u origin master
+}
+
+update() {
+    bundle exec jekyll build
+    cd _site
+    git add .
+    git cam "update"
+    git ps
+}
+
+update

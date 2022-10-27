@@ -4,8 +4,7 @@ date: 2022-08-01
 layout: post
 mathjax: true
 category:
-- C
-- GCC
+- lang
 ---
 Ref: [1](https://www.acrc.bris.ac.uk/acrc/RedHat/rhel-gcc-en-4/c-dialect-options.html), [2](https://stackoverflow.com/questions/17206568/what-is-the-difference-between-c-c99-ansi-c-and-gnu-c)
 

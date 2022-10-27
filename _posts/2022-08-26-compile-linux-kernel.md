@@ -4,8 +4,7 @@ date: 2022-08-26
 layout: post
 mathjax: true
 category:
-- Linux
-- Kernel
+- os
 ---
 编译实践1：
 学习Linux内核模块开发，需要增加一个`FORCE_UNLOADING` feature 以避免安装的模块崩溃时可以强行卸载而不必重启。而好像只有OpenSuSE可以通过修改配置文件来动态修改内核配置，而其他发行版只能重新编译内核。

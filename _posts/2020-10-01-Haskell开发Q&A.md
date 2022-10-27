@@ -4,7 +4,7 @@ date: 2020-10-01
 layout: post
 mathjax: true
 category:
-- Haskell
+- lang
 ---
 ## 准备环境：
 
