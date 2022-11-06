@@ -80,7 +80,7 @@ https://www.quicklisp.org/beta/#installation
 
 *结果万万没想到quicklisp采用的是人肉管理的方法。。。。。。*
 
-参考\[https://www.cliki.net/Quicklisp%20tutorial\](https://www.cliki.net/Quicklisp tutorial)，到[issue列表](https://github.com/quicklisp/quicklisp-projects/issues)里发请求！！！条件很宽泛，只需要必要的在ASDF下可运行和免费的证书 (ex: Public Domain, MIT, BSD or similar) license （反过来可见一段时间社区的活跃程度）。
+参考[https://www.cliki.net/Quicklisp%20tutorial](https://www.cliki.net/Quicklisp tutorial)，到[issue列表](https://github.com/quicklisp/quicklisp-projects/issues)里发请求！！！条件很宽泛，只需要必要的在ASDF下可运行和免费的证书 (ex: Public Domain, MIT, BSD or similar) license （反过来可见一段时间社区的活跃程度）。
 
 ## FAQ:
 

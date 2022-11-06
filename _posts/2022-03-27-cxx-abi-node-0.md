@@ -16,7 +16,7 @@ Ref: [https://itanium-cxx-abi.github.io/cxx-abi/abi.html](1)
 
 1. 一个非空的数据成员指针的基到派生和派生到基的转换, 可以通过分别加或减掉二者静态偏移量(C++标准保证可知这个静态偏移量)实现
 
-1. 建议更好的空数据指针实现: (x \<\< 1) + 1 表示非空数据
+1. 建议更好的空数据指针实现: (x << 1) + 1 表示非空数据
 
 ### Member Function Pointers
 
@@ -69,7 +69,7 @@ so that the latter may be laid out as required by the base class without regard 
 
 The offset to top holds the displacement to the top of the object from the location within the object of the virtual table pointer that addresses this virtual table, as a  ptrdiff_t.
 
-It is always present. The offset provides a way to find the top of the object from any base subobject with a virtual table pointer. This is necessary for dynamic_cast\<void\*\> in particular.
+It is always present. The offset provides a way to find the top of the object from any base subobject with a virtual table pointer. This is necessary for dynamic_cast<void*> in particular.
 
 <b>NOTE</b>: In a complete object virtual table, and therefore in all of its primary base virtual tables, the value of this offset will be zero. For the secondary virtual tables of other non-virtual bases, and of many virtual bases, it will be negative. Only in some construction virtual tables will some virtual base virtual tables have positive offsets, due to a different ordering of the virtual bases in the full object than in the subobject’s standalone layout.
 The typeinfo pointer points to the typeinfo object used for RTTI. It is always present. All entries in each of the virtual tables for a given class must point to the same typeinfo object. A correct implementation of typeinfo equality is to check pointer equality, except for pointers (directly or indirectly) to incomplete types. The typeinfo pointer is a valid pointer for polymorphic classes, i.e. those with virtual functions, and is zero for non-polymorphic classes.

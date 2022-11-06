@@ -7,14 +7,21 @@
 <head>
     {% include head.html %}
 </head>
-<body class="index">
+<body class="index" data-spy="scroll" data-target="#toc" tabindex="0">
 
     {% include header.html %}
 
     {{content}}
-    
+
+    {% include search-results.html %}
+
     {% include footer.html %}
-    
+
     {% include scripts.html %}
+
+    {% include search-loader.html %}
+
+    {% include styles.html %}
+
 </body>
 </html>

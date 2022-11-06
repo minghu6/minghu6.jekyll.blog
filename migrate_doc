@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
-FROM_DIR=~/coding/blog/blog-draft/normal-files
+DRAFT_HOME=~/coding/blog/blog-draft/
+FROM_DOC_DIR=$DRAFT_HOME/published
+FROM_ASSETS_DIR=$DRAFT_HOME/assets
 
-convmdblog $FROM_DIR ./_posts d j
+migrate_doc() {
+    convmdblog $FROM_DOC_DIR ./_posts d j
+}
+
+sync_assets() {
+    rsync -avP --exclude-from='./rsync_exclude.txt' $FROM_ASSETS_DIR/ ./assets
+}
+
+sync_assets
+migrate_doc

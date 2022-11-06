@@ -1,0 +1,125 @@
+%link-color {
+  color: var(--link-color);
+}
+%cursor-pointer {
+  cursor: pointer;
+}
+
+#search-trigger {
+  display: block;
+}
+
+
+#search-wrapper {
+  display: flex;
+
+  border-radius: 1rem;
+  border: 1px solid var(--search-wrapper-border-color);
+  background: var(--search-wrapper-bg);
+
+  i {
+    z-index: 2;
+    font-size: 0.9rem;
+    color: var(--search-icon-color);
+  }
+}
+
+#search-cancel {
+  color: var(--link-color);
+  margin-left: 1rem;
+  display: none;
+
+  @extend %cursor-pointer;
+}
+
+#search-input {
+  background: center;
+  border: 0;
+  border-radius: 0;
+  padding: 0.18rem 0.3rem;
+  color: var(--text-color);
+  height: auto;
+
+  &:focus {
+    box-shadow: none;
+    background: center;
+
+    &.form-control {
+      &::-moz-placeholder { @include input-placeholder; }
+      &::-webkit-input-placeholder { @include input-placeholder; }
+      &::placeholder { @include input-placeholder; }
+    }
+  }
+}
+
+#search-hints {
+  padding: 0 1rem;
+
+  h4 {
+    margin-bottom: 1.5rem;
+  }
+
+  .post-tag {
+    display: inline-block;
+    line-height: 1rem;
+    font-size: 1rem;
+    background: var(--search-tag-bg);
+    border: none;
+    padding: 0.5rem;
+    margin: 0 1.25rem 1rem 0;
+
+    &::before {
+      content: "#";
+      color: var(--text-muted-color);
+      padding-right: 0.2rem;
+    }
+
+    @extend %link-color;
+  }
+}
+
+#search-result-wrapper {
+  max-width: calc(var(--s-post-content) + 4rem);
+}
+
+#search-results {
+  padding-bottom: 3rem;
+  max-width: var('--s-post-content');
+
+  a {
+    &:hover {
+      @extend %link-hover;
+    }
+
+    @extend %link-color;
+    border-bottom: none;
+
+    font-size: 1.4rem;
+    line-height: 2.5rem;
+  }
+
+  > div {
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    i { /* icons */
+      color: #818182;
+      margin-right: 0.15rem;
+      font-size: 80%;
+    }
+
+    > p {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+  }
+
+  > p {
+    min-width: max-content;
+    font-size: 2rem;
+  }
+}

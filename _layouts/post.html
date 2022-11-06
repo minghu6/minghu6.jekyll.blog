@@ -1,60 +1,69 @@
 ---
-layout: default
+layout: page
 ---
 
 <article class="post">
 
-    <div class="post__title">
-        <h1 class="post__title__text">{{ page.title }}</h1>
+  <div class="post__title">
+    <h1 class="post__title__text">{{ page.title }}</h1>
+  </div>
+  <div class="post__meta">
+    <div class="post__meta__category">
+      {% for category in page.category %}
+        {% assign cathtml = category | append: ".html" %}
+        <a href="{{ site.url }}/category/{{ cathtml }}">
+          <p class="post__meta__category__title" style="background: {{ site.category | where: "category", category | map: "hue"}}">
+            {{ site.category | where: "category", category | map: "title"}}
+          </p>
+        </a>
+      {% else %}
+        <p class="post__meta__category__title">No category</p>
+      {% endfor %}
     </div>
-    <div class="post__meta"> 
-        <div class="post__meta__category">
-            {% for category in page.category %}
-                <p class="post__meta__category__title" style="background: {{ site.category | where: "category", category | map: "hue"}}">{{ site.category | where: "category", category | map: "title"}}</p>
-            {% else %}
-                <p class="post__meta__category__title">No category</p>
-            {% endfor %}
-        </div>
-        <p class="post__meta__divider">·</p>
-        <div class="post__meta__date">
-            {{ page.date | date: '%B %d, %Y' }}
-        </div>
-        {% if page.author != nil %}
-            {% assign author = site.authors | where: "nick", page.author | first %}
-            <p class="post__meta__divider">·</p>
-            <div class="post__meta__author">
-                <p>by </p>
-                <img class="post__meta__author__photo" src="{{ site.url }}/{{ author.photo_dir }}"/>
-                <p>{{ author.full_name }}</p>
-            </div>
-        {% endif %}
+    <p class="post__meta__divider">·</p>
+    <div class="post__meta__date">
+      {{ page.date | date: '%B %d, %Y' }}
     </div>
-
-    {% if page.prevPart != nil or page.nextPart != nil %}
-        <div class="post__navigator">
-            <div
-                class="post__navigator__buttons"
-                {% if page.prevPart == nil %}
-                    style="justify-content: flex-end;"
-                {% endif %}
-            >
-                {% if page.prevPart != nil %}
-                    <a href="{% link {{ page.prevPart }} %}">
-                        <img  class="arrow-left" src="{{ site.url }}/assets/img/icons/arrow_left.svg"/>
-                        Previous
-                    </a>
-                {% endif %}
-                {% if page.nextPart != nil %}
-                    <a href="{% link {{ page.nextPart }} %}">
-                        Next
-                        <img class="arrow-right" src="{{ site.url }}/assets/img/icons/arrow_right.svg"/>
-                    </a>
-                {% endif %}
-            </div>
-        </div>
+    {% if page.author != nil %}
+      {% assign author = site.authors | where: "nick", page.author | first %}
+      <p class="post__meta__divider">·</p>
+      <div class="post__meta__author">
+        <p>by
+        </p>
+        <img class="post__meta__author__photo" src="{{ site.url }}/{{ author.photo_dir }}"/>
+        <p>{{ author.full_name }}</p>
+      </div>
     {% endif %}
+  </div>
 
-    <div class="post__content">
-        {{ content }}
+  {% if page.prevPart != nil or page.nextPart != nil %}
+    <div class="post__navigator">
+      <div class="post__navigator__buttons" {% if page.prevPart == nil %}
+        style="justify-content: flex-end;"
+        {% endif %}>
+        {% if page.prevPart != nil %}
+          <a href="{% link {{ page.prevPart }} %}">
+            <img class="arrow-left" src="{{ site.url }}/assets/img/icons/arrow_left.svg"/>
+            Previous
+          </a>
+        {% endif %}
+        {% if page.nextPart != nil %}
+          <a href="{% link {{ page.nextPart }} %}">
+            Next
+            <img class="arrow-right" src="{{ site.url }}/assets/img/icons/arrow_right.svg"/>
+          </a>
+        {% endif %}
+      </div>
     </div>
+  {% endif %}
+
+  <div class="post__content_container">
+    <div class="post__content">{{ content }}</div>
+
+    <div id="toc-wrapper" class="pl-0 pr-4 mb-5 post__toc">
+      <nav id="toc" data-toggle="toc"></nav>
+    </div>
+
+  </div>
+
 </article>

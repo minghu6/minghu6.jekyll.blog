@@ -3,105 +3,152 @@
 // =============================
 // Used for global styles.
 
-*, *:before, *:after{
+*,
+*:before,
+*:after {
     box-sizing: border-box;
 }
 
-html{
+html {
 
     font-family: var(--f-text);
 
     // Root font size. Other sizes are derived from this accroding to variable values.
     font-size: 16px;
 
-    @include for-size('tablet'){
+    @include for-size('tablet') {
         font-size: 18px;
     }
 }
 
-body{
+
+body {
     background: var(--c-pageBackground);
-    
+
     margin: 0;
     min-height: 100vh;
-    
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-h1,h2,h3,h4,h5,h5,h6{
+%section {
+    #core-wrapper & {
+        margin-top: 2.5rem;
+        margin-bottom: 1.25rem;
 
+        &:focus {
+            outline: none;
+            /* avoid outline in Safari */
+        }
+    }
+}
+
+%link-hover {
+    color: #d2603a !important;
+    border-bottom: 1px solid #d2603a;
+    text-decoration: none;
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h5,
+h6 {
+    @extend %section;
     font-family: var(--f-header);
 }
 
-h1{
 
-    font-size: 2rem;
+h1 {
+    font-size: 1.9rem;
 }
 
-p{
+h2 {
+
+    font-size: 1.5rem;
+}
+
+h3 {
+
+    font-size: 1.2rem;
+}
+
+h4 {
+    font-size: 1.15rem;
+}
+
+p {
     font-size: var(--s-p);
 }
 
-a{
-    
-    &:link{
+a {
+
+    &:link {
         color: var(--c-link);
     }
 
-    &:visited{
+    &:visited {
         color: var(--c-linkVisited);
     }
 
-    &:hover{
+    &:hover {
         color: var(--c-linkHover);
+        text-decoration: none;
     }
 
-    &:active{
+    &:active {
         color: var(--c-linkActive);
     }
 }
 
-table:not([class]){
-    border-collapse: collapse;
-    border-spacing: 0;
-    border: 1px solid var(--c-tableBorder);
 
-    th,td{
+table {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+    text-align: center;
+    border: 1px var(--c-tableBorder);
+
+    th,
+    td {
         padding: .25rem;
-        border: 1px solid var(--c-tableBorder);
+        border: 1px dashed var(--c-tableBorder);
     }
 }
 
-.highlight{
+.highlight {
 
     margin: 2rem 0;
     transition: $t-smooth;
     box-shadow: inset 0px 0px 14px -4px var(--c-codeShadow);
 
-    &:hover{
+    &:hover {
         box-shadow: inset 0px 0px 14px -4px var(--c-codeShadowHover);
     }
 
     max-width: calc(100vw - 2rem);
     overflow-x: auto;
 
-    pre{
+    pre {
         margin: 0;
         padding: 1rem;
     }
 }
 
-.sx-center{
+.sx-center {
 
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.sx-button{
+.sx-button {
 
     width: 100%;
     margin: 1rem 0;
@@ -109,11 +156,15 @@ table:not([class]){
     align-items: center;
     justify-content: center;
 
-    &__content{
+    &__content {
 
-        &:link, &:visited, &:hover, &:active{
+        &:link,
+        &:visited,
+        &:hover,
+        &:active {
             color: var(--c-themePrimaryLight);
         }
+
         text-decoration: none;
         width: fit-content;
         padding: .5rem 1rem;
@@ -122,31 +173,48 @@ table:not([class]){
         justify-content: center;
         transition: $t-smooth;
 
-        &.red{background-color: var(--c-themeHueRed);}
-        &.orange{background-color: var(--c-themeHueOrange);}
-        &.green{background-color: var(--c-themeHueGreen);}
-        &.blue{background-color: var(--c-themeHueBlue);}
-        &.purple{background-color: var(--c-themeHuePurple);}
-        &.brown{background-color: var(--c-themeHueBrown);}
+        &.red {
+            background-color: var(--c-themeHueRed);
+        }
 
-        img{
+        &.orange {
+            background-color: var(--c-themeHueOrange);
+        }
+
+        &.green {
+            background-color: var(--c-themeHueGreen);
+        }
+
+        &.blue {
+            background-color: var(--c-themeHueBlue);
+        }
+
+        &.purple {
+            background-color: var(--c-themeHuePurple);
+        }
+
+        &.brown {
+            background-color: var(--c-themeHueBrown);
+        }
+
+        img {
             margin-right: 1rem;
             height: 1rem;
             filter: brightness(0) invert(1);
         }
 
-        &:hover{
+        &:hover {
             letter-spacing: .05rem;
         }
     }
 }
 
-.sx-subtitle{
+.sx-subtitle {
     font-style: italic;
     color: var(--c-subtitle);
 }
 
-.sx-picture{
+.sx-picture {
 
     display: flex;
     flex-direction: column;
@@ -154,4 +222,16 @@ table:not([class]){
     justify-content: center;
     width: fit-content;
     margin: 1.5rem 0;
+}
+
+.unloaded {
+    display: none !important;
+}
+
+.loaded {
+    display: block !important;
+
+    @at-root .d-flex#{&} {
+      display: flex !important;
+    }
 }

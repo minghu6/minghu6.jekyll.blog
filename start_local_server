@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# 如果不加localhost，本地启动提示链接是127.0.0.1，而访问这个地址又会造成和 localhost 资源请求的跨域问题
+
+bundle exec jekyll serve --host localhost

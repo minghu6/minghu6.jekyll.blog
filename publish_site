@@ -11,7 +11,7 @@ update() {
     bundle exec jekyll build
     cd _site
     git add .
-    git cam "update"
+    git commit -am "update"
     git ps
 }
 

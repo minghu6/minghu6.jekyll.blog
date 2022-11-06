@@ -52,7 +52,9 @@ category:
 
 1. 如果make过程中因为什么原因中途停掉了，可以再次启动，但是第一次会报错: `"dpkg-source: unrepresentable changes to source"`, 只要把相关报错文件删除掉重新运行即可。
 
-1. \>= 20.04, 可能需要的额外依赖包:
+1. 
+    > 
+    > = 20.04, 可能需要的额外依赖包:
    
    dwarves # tmp_vmlinux.btf: pahole (pahole) is not available
 

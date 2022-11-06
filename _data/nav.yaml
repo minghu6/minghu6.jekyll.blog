@@ -1,0 +1,24 @@
+- title: Algorithm
+  url: category/algs.html
+  hue: "var(--c-themeHueOrange)"
+  icon: assets/img/icons/algs1.png
+
+- title: OS
+  url: category/os.html
+  hue: "var(--c-themeHueRed)"
+  icon: assets/img/icons/os1.png
+
+- title: Lang
+  url: category/lang.html
+  hue: "var(--c-themeHuePurple)"
+  icon: assets/img/icons/lang1.png
+
+- title: Network
+  url: category/net.html
+  hue: "var(--c-themeHueBlue)"
+  icon: assets/img/icons/net1.png
+
+- title: Other
+  url: category/oth.html
+  hue: "var(--c-themeQuaternaryDark)"
+  icon: assets/img/icons/oth1.png

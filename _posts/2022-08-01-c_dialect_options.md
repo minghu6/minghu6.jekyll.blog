@@ -29,10 +29,10 @@ Ref: [1](https://www.acrc.bris.ac.uk/acrc/RedHat/rhel-gcc-en-4/c-dialect-options
 |---|------|
 |-fhosted (takes place in a hosted env)|-fno-hosted|
 |-fno-freestanding|-ffreestanding|
-|-fno-builtin, -fno-builtin-\<xxx\>||
+|-fno-builtin, -fno-builtin-<xxx>||
 
 1. fno-builtin: Don’t recognize built-in functions that do not begin with `__builtin_` as prefix, `__built_in_xxx` always existed.
 
-1. fno-builtin-\<xxx\> such as `-fno-builtin-printf`.
+1. fno-builtin-<xxx> such as `-fno-builtin-printf`.
 
 1. on `no_std` env using `__builtin_xxx` instead

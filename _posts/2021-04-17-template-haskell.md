@@ -31,7 +31,7 @@ genId = [| \x -> x |]  -- 也就是 genId = [| id |]
 
 通常宏的返回值都是`Q Exp`意思是Quotation Expression
 
-\[\|…\|\] 其实是\[e|…\|\]的简写
+[|…|] 其实是[e|…|]的简写
 
 还有分别代表types、pattern，declaration的`[t|...|], [p|...|], [e|...|]`
 
@@ -41,6 +41,6 @@ genId = [| \x -> x |]  -- 也就是 genId = [| id |]
 
 quote `'`
 
-back-quote <code>\`</code>
+back-quote <code>`</code>
 
 quasi-quote `~@`

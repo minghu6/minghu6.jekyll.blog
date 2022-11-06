@@ -38,7 +38,7 @@ _Unwind_Reason_Code (*__personality_routine)
 
 * 返回值类型:
 
-**\_Unwind_Reason_Code**:
+**_Unwind_Reason_Code**:
 
 ````c
 typedef enum {
@@ -58,7 +58,7 @@ typedef enum {
 
 * 参数2 `actions`: Personality Routine Actions:
 
-**\_Unwind_Action**:
+**_Unwind_Action**:
 
 ````c
   typedef int _Unwind_Action;
@@ -76,7 +76,7 @@ action flag可以在不违反语义情况下(比如搜索和清除阶段不能�
 
 * 参数4 `exceptionObject`: `_Unwind_Exception`的指针类型
 
-**\_Unwind_Exception**
+**_Unwind_Exception**
 
 ````c
 struct _Unwind_Exception {
@@ -87,7 +87,7 @@ struct _Unwind_Exception {
 };
 ````
 
-**\_Unwind_Exception_Cleanup_Fn**:
+**_Unwind_Exception_Cleanup_Fn**:
 
 ````c
 typedef void (*_Unwind_Exception_Cleanup_Fn)
@@ -105,7 +105,7 @@ typedef void (*_Unwind_Exception_Cleanup_Fn)
 
 * 参数5 `context`: `_Unwind_Context`的指针
 
-**\_Unwind_Context**
+**_Unwind_Context**
 
 ````c
 struct _Unwind_Context
@@ -133,7 +133,7 @@ struct _Unwind_Context
 
 对于一个异常只要多次抛出(by re-throwing), 就可以多次执行两阶段.
 
-**\_Unwind_Action 解释**
+**_Unwind_Action 解释**
 
 1. `_UA_SEARCH_PHASE`:
    成功返回 `_URC_HANDLER_FOUND`, 失败返回 `_URC_CONTINUE_UNWIND` (上文所示, 个性例程返回值是`_Unwind_Reason_Code`).
@@ -146,13 +146,13 @@ struct _Unwind_Context
    在 *Phase 2*, 表明当前帧就是要找的有被标记的handler的帧. The personality routine is not allowed to change its mind between phase 1 and phase 2, i.e. it must handle the exception in this frame in phase 2.
 
 1. `_UA_FORCE_UNWIND`
-   在 *Phase 2*, 表明, 表示异常不允许被捕获. This flag is set while unwinding the stack for `longjmp` or during thread cancellation. User-defined code in a catch clause may still be executed, but the catch clause must resume unwinding with a call to \_Unwind_Resume when finished.
+   在 *Phase 2*, 表明, 表示异常不允许被捕获. This flag is set while unwinding the stack for `longjmp` or during thread cancellation. User-defined code in a catch clause may still be executed, but the catch clause must resume unwinding with a call to _Unwind_Resume when finished.
 
 转移控制权给landing pad,返回`_URC_INSTALL_CONTEXT`, 在这之前 **unwind library** 使用上下文管理例程和上下文记录`_Unwind_Context`来恢复寄存器环境.
 
 ### 上下文管理例程
 
-**\_Unwind_GetGR**
+**_Unwind_GetGR**
 
 ````c
 uint64 _Unwind_GetGR (struct _Unwind_Context *context, int index);
@@ -164,7 +164,7 @@ uint64 _Unwind_GetGR (struct _Unwind_Context *context, int index);
 
 0-31 是固定寄存器, 32-127 是栈寄存器. During the two phases of unwinding, only GR1 has a guaranteed value, which is the Global Pointer (GP) of the frame referenced by the unwind context. If the register has its NAT bit set, the behaviour is unspecified.
 
-**\_Unwind_SetGR**
+**_Unwind_SetGR**
 
 ````c
 void _Unwind_SetGR (struct _Unwind_Context *context, int index, uint64 new_value);
@@ -174,7 +174,7 @@ This function sets the 64-bit value of the given register, identified by its ind
 
 The behaviour is guaranteed only if the function is called during phase 2 of unwinding, and applied to an unwind context representing a handler frame, for which the personality routine will return `_URC_INSTALL_CONTEXT`. In that case, only registers GR15, GR16, GR17, GR18 should be used. These scratch registers are reserved for passing arguments between the personality routine and the landing pads.
 
-**\_Unwind_GetIP**
+**_Unwind_GetIP**
 
 ````c
 uint64 _Unwind_GetIP (struct _Unwind_Context *context);
@@ -184,7 +184,7 @@ This function returns the 64-bit value of the instruction pointer (IP) 也就是
 
 During unwinding, the value is guaranteed to be the address of the bundle immediately following the call site in the function identified by the unwind context. This value may be outside of the procedure fragment for a function call that is known to not return (such as `_Unwind_Resume`).
 
-**\_Unwind_SetIP**
+**_Unwind_SetIP**
 
 ````c
 void _Unwind_SetIP (struct _Unwind_Context *context, uint64 new_value);
@@ -194,7 +194,7 @@ This function sets the value of the instruction pointer (IP) for the routine ide
 
 The behaviour is guaranteed only when this function is called for an unwind context representing a handler frame, for which the personality routine will return `_URC_INSTALL_CONTEXT`. In this case, control will be transferred to the given address, which should be the address of a landing pad.
 
-**\_Unwind_GetLanguageSpecificData**
+**_Unwind_GetLanguageSpecificData**
 
 ````c
 uint64 _Unwind_GetLanguageSpecificData (struct _Unwind_Context *context);
@@ -202,9 +202,9 @@ uint64 _Unwind_GetLanguageSpecificData (struct _Unwind_Context *context);
 
 This routine returns the address of the language-specific data area for the current stack frame.
 
-![<b>NOTE</b>:](/assets/img/warning.gif) *This routine is not stricly required: it could be accessed through `_Unwind_GetIP` using the documented format of the `UnwindInfoBlock`, but since this work has been done for finding the personality routine in the first place, it makes sense to cache the result in the context. We could also pass it as an argument to the personality routine.*
+<div class="sx-center"><img src="/https://itanium-cxx-abi.github.io/cxx-abi/warning.gif" title=""></div><b>NOTE</b>: *This routine is not stricly required: it could be accessed through `_Unwind_GetIP` using the documented format of the `UnwindInfoBlock`, but since this work has been done for finding the personality routine in the first place, it makes sense to cache the result in the context. We could also pass it as an argument to the personality routine.*
 
-**\_Unwind_GetRegionStart**
+**_Unwind_GetRegionStart**
 
 ````c
 uint64 _Unwind_GetRegionStart (struct _Unwind_Context *context);
@@ -216,7 +216,7 @@ This information is required to access any data stored relative to the beginning
 
 ### 抛出异常
 
-**\_Unwind_RaiseException**
+**_Unwind_RaiseException**
 
 ````c
 _Unwind_Reason_Code _Unwind_RaiseException (struct _Unwind_Exception *exception_object );
@@ -228,9 +228,9 @@ _Unwind_Reason_Code _Unwind_RaiseException (struct _Unwind_Exception *exception_
    The unwinder encountered the end of the stack during phase 1, without finding a handler.
 1. `_URC_FATAL_PHASE1_ERROR`: The unwinder encountered an unexpected error during phase 1, e.g. stack corruption.
 
-*![<b>NOTE</b>:](/assets/img/warning.gif) The unwind runtime will likely have modified the stack (e.g. popped frames from it) or register context, or landing pad code may have corrupted them. As a result, the the caller of `_Unwind_RaiseException` can make no assumptions about the state of its stack or registers.*
+*<div class="sx-center"><img src="/https://itanium-cxx-abi.github.io/cxx-abi/warning.gif" title=""></div><b>NOTE</b>: The unwind runtime will likely have modified the stack (e.g. popped frames from it) or register context, or landing pad code may have corrupted them. As a result, the the caller of `_Unwind_RaiseException` can make no assumptions about the state of its stack or registers.*
 
-**\_Unwind_ForcedUnwind**
+**_Unwind_ForcedUnwind**
 
 ````c
 _Unwind_Reason_Code _Unwind_ForcedUnwind (
@@ -267,13 +267,13 @@ Forced unwinding 是 *Phase-2* 中的过程. 对每一个展开帧, 都调用`st
 
 如果`stop`函数返回了任何`_URC_NO_REASON`意外的reason code, 从 `_Unwind_ForcedUnwind`的调用者的角度讲, 栈的状态是不确定的. 因此, unwind library 应该返回 `_URC_FATAL_PHASE2_ERROR` 给它的调用者.
 
-![<b>NOTE</b>:](/assets/img/warning.gif) *Example: `longjmp_unwind()`*
+<div class="sx-center"><img src="/https://itanium-cxx-abi.github.io/cxx-abi/warning.gif" title=""></div><b>NOTE</b>: *Example: `longjmp_unwind()`*
 
 *期望的`longjmp_unwind()`的实现是这样的. `setjmp()` 保存了状态后 (包括帧的指针).  `longjmp_unwind()`将会调用`_Unwind_ForcedUnwind`,用context里记录的帧地址和当前保存的帧地址进行比较. 如果相等就调用 `setjmp()` 进行恢复, 否则返回 `_URC_NO_REASON` 或者 `_URC_END_OF_STACK`.*
 
-![<b>NOTE</b>:](/assets/img/warning.gif) *如果未来对 两阶段的foced unwinding 有新的需求, 可以定义另外的例程和新的`actions` 参数类型来进行支持*
+<div class="sx-center"><img src="/https://itanium-cxx-abi.github.io/cxx-abi/warning.gif" title=""></div><b>NOTE</b>: *如果未来对 两阶段的foced unwinding 有新的需求, 可以定义另外的例程和新的`actions` 参数类型来进行支持*
 
-**\_Unwind_Resume**
+**_Unwind_Resume**
 
 ````c
 void _Unwind_Resume (struct _Unwind_Exception *exception_object);
@@ -281,13 +281,13 @@ void _Unwind_Resume (struct _Unwind_Exception *exception_object);
 
 恢复异常的传播 e.g. 在部分展开的栈中执行清理代码(clean-up code)后如果不能恢复程序的正常执行, 就会恢复该异常的传播. 具体地就是在执行清理任务的landing pad结尾调用它(`_Unwind_Resume`).
 
-![<b>NOTE 1</b>:](/assets/img/warning.gif)*`_Unwind_Resume`不能用来实现重抛(re-throwing). 这是一个两阶段模型, 之前的unwind session会被关闭. 重抛需要使用`_Unwind_RaiseException`.*
+<div class="sx-center"><img src="/https://itanium-cxx-abi.github.io/cxx-abi/warning.gif" title=""></div><b>NOTE 1</b>:*`_Unwind_Resume`不能用来实现重抛(re-throwing). 这是一个两阶段模型, 之前的unwind session会被关闭. 重抛需要使用`_Unwind_RaiseException`.*
 
-![<b>NOTE 2</b>:](/assets/img/warning.gif) This is the only routine in the unwind library which is expected to be called directly by generated code: it will be called at the end of a landing pad in a “landing-pad” model.
+<div class="sx-center"><img src="/https://itanium-cxx-abi.github.io/cxx-abi/warning.gif" title=""></div><b>NOTE 2</b>: This is the only routine in the unwind library which is expected to be called directly by generated code: it will be called at the end of a landing pad in a “landing-pad” model.
 
 ### 异常对象的管理
 
-**\_Unwind_DeleteException**
+**_Unwind_DeleteException**
 
 ````c
 void _Unwind_DeleteException (struct _Unwind_Exception *exception_object);

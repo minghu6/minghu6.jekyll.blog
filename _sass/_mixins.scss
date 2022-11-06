@@ -7,7 +7,7 @@
 // responsivity
 // ===============================================
 @mixin for-size($size, $width: 1000px) {
-   
+
     // ▼▼▼▼ DO NOT EDIT ▼▼▼▼
     // by resolution
     @if $size == 'hd-up' {
@@ -18,7 +18,7 @@
         @media (min-width: 1440px) { @content; }
     } @else if $size == 'uhd-up' {
         @media (min-width: 2160px) { @content; }
-    } 
+    }
 
     // by devices
     @else if $size == 'tablet' {
@@ -26,10 +26,10 @@
     }
     @else if $size == 'tablet-up' {
         @media (min-width: 768px) { @content; }
-    } 
+    }
     @else if $size == 'desktop' {
         @media (min-width: 769px) { @content; }
-    } 
+    }
 
     // custom natural breakpoints (project+element-specific)
     @else if $size == 'bp-up'{
@@ -46,12 +46,12 @@
     // natural breakpoints (project-specific)
     @else if $size == 'menu-width'{
 
-        @media (max-width: $s-menuWidth) { @content; }        
+        @media (max-width: $s-menuWidth) { @content; }
     }
 
     @else if $size == 'menu-width-up'{
 
-        @media (min-width: $s-menuWidth) { @content; }        
+        @media (min-width: $s-menuWidth) { @content; }
     }
 }
 
@@ -65,3 +65,8 @@
     flex-direction: $direction;
     @content;
 }
+
+@mixin input-placeholder {
+    opacity: 0.6;
+}
+
