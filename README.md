@@ -12,11 +12,11 @@ This generator depends on [jekyll](https://jekyllrb.com/) static site generator 
 
 ## Generate Procedure
 
-1. (optional) install [convmdblog](https://github.com/minghu6/convmdblog) script tool.
+1. (init) install [convmdblog](https://github.com/minghu6/convmdblog) script tool.
 
-1. (optioanl) migrate from outside markdown post using convmdblog.
+1. (init) migrate from outside markdown post using convmdblog.
 
-1. (optioanl) run command `bundle` to install denpential ruby package.
+1. (init) run command `bundle` to install denpential ruby package.
 
 1. run command `./publish_site` to generate static sites and push it into host site's repository.
 

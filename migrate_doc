@@ -5,7 +5,9 @@ FROM_DOC_DIR=$DRAFT_HOME/published
 FROM_ASSETS_DIR=$DRAFT_HOME/assets
 
 migrate_doc() {
-    convmdblog $FROM_DOC_DIR ./_posts d j
+    trash ./_posts
+    (cd ./convmdblog && make build)
+    ./convmdblog/convmdblog $FROM_DOC_DIR
 }
 
 sync_assets() {

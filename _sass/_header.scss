@@ -18,6 +18,12 @@
         width: 100%;
         padding-right: 15px;
         margin-right: auto;
+
+        #breadcrumb {
+            a:hover {
+                text-decoration: none;
+            }
+        }
     }
 
     .logo{

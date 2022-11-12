@@ -24,7 +24,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   Coding somethings
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-github_username:  minghu6
+github_username: minghu6
 
 # Build settings
 # theme: jekyll-theme-simplex-v2
@@ -38,7 +38,7 @@ copyright: © minghu6
 
 sass:
     style: compressed
-  
+
 collections:
     category:
         output: true
@@ -57,4 +57,7 @@ exclude:
   - README.md
   - migrate_doc
   - publish_site
-  
+  - convmdblog
+
+
+permalink: /:categories/:title:output_ext
