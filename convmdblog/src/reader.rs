@@ -11,13 +11,34 @@ use crate::{
 };
 
 
+///////////////////////////////////////////////////////////////////////////////
+//// Macro
+
+macro_rules! no_front_matter {
+    ($p:expr) => {
+        return Err(format!("No yaml header from {:?}", $p))
+    };
+}
+
+// macro_rules! no_date_tag {
+//     ($p:expr) => {
+//         return Err(format!("No date tag on yaml header from {:?}", $p))
+//     };
+// }
+
+// macro_rules! no_title_tag {
+//     ($p:expr) => {
+//         return Err(format!("No title tag on yaml header from {:?}", $p))
+//     };
+// }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //// Structure
 
 #[derive(Debug)]
 pub struct Markdown {
-    pub front_matter: Option<FrontMatter>,
+    pub front_matter: FrontMatter,
     pub name_stem: String,
     pub raw: String,
     pub text_start: usize,
@@ -26,8 +47,8 @@ pub struct Markdown {
 #[serde_as]
 #[derive(Debug, Deserialize)]
 pub struct FrontMatter {
-    pub title: Option<String>,
-    pub date: Option<RelaDateTime>,
+    pub title: String,
+    pub date: RelaDateTime,
     #[serde_as(deserialize_as = "OneOrMany<_, PreferMany>")]
     pub tags: Vec<String>,
 }
@@ -43,22 +64,21 @@ impl Markdown {
 
         let raw = read_to_string(&p)?;
 
-        let yaml_hdr;
+        let front_matter;
         let text_start;
         match Self::fetch_front_matter(&raw) {
             Some(range) => {
                 text_start = range.end + 3;
                 let yaml_text = Cow::Borrowed(&raw[range]);
-                yaml_hdr = Some(FrontMatter::from_str(&yaml_text)?);
+                front_matter = FrontMatter::from_str(&yaml_text)?;
             }
             None => {
-                text_start = 0;
-                yaml_hdr = None;
+                no_front_matter!(p.as_ref());
             }
         };
 
         Ok(Self {
-            front_matter: yaml_hdr,
+            front_matter,
             name_stem,
             raw,
             text_start,
@@ -82,6 +102,7 @@ impl Markdown {
         None
     }
 }
+
 
 impl FrontMatter {
     fn from_str(text: &str) -> Result<Self> {

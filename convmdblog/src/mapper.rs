@@ -1,3 +1,5 @@
+use std::ffi::OsStr;
+use std::fmt::Display;
 use std::path::{Path, PathBuf};
 use std::{collections::HashMap, fs};
 
@@ -5,6 +7,7 @@ use chrono::Datelike;
 use lazy_static::lazy_static;
 use lol_html::html_content::ContentType;
 use lol_html::{element, rewrite_str, RewriteStrSettings};
+use pulldown_cmark::LinkType;
 use pulldown_cmark::{md::push_md, CowStr, Event, Options, Parser, Tag};
 use serde_yaml::{Mapping, Value};
 
@@ -13,29 +16,6 @@ use crate::{
     or2s,
     reader::Markdown,
 };
-
-
-///////////////////////////////////////////////////////////////////////////////
-//// Macro
-
-macro_rules! no_yaml_hdr {
-    ($p:expr) => {
-        return Err(format!("No yaml header from {:?}", $p))
-    };
-}
-
-macro_rules! no_date_tag {
-    ($p:expr) => {
-        return Err(format!("No date tag on yaml header from {:?}", $p))
-    };
-}
-
-macro_rules! no_title_tag {
-    ($p:expr) => {
-        return Err(format!("No title tag on yaml header from {:?}", $p))
-    };
-}
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -100,6 +80,9 @@ lazy_static! {
 
 
 
+///////////////////////////////////////////////////////////////////////////////
+//// Structure && Enumeration
+
 /// Category
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 #[non_exhaustive]
@@ -113,6 +96,17 @@ enum Cat {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+//// Implementation
+
+impl Display for Cat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", format!("{:?}", self).to_lowercase())
+    }
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //// Public Entry
 
@@ -124,40 +118,24 @@ pub fn mapping(input: &Path, outdir: &Path) -> Result<()> {
     // how to map subdir of img in a neat way?
     let text = map_img_ref(&text, "/")?;
     let text = center_img(&text)?;
+    let text = map_relative_md_ref(&text, input.parent().unwrap())?;
 
     /* Specify the file name*/
-    let yaml_hdr;
-    match md.front_matter {
-        Some(hdr) => {
-            yaml_hdr = hdr;
-        }
-        None => no_yaml_hdr!(input),
-    }
+    let front_matter = md.front_matter;
+    let rela = front_matter.date;
 
-    let date_prefix;
-    match yaml_hdr.date {
-        Some(rela) => {
-            date_prefix = format!(
-                "{:04}-{:02}-{:02}",
-                rela.0.year(),
-                rela.0.month(),
-                rela.0.day()
-            )
-        }
-        None => no_date_tag!(input),
-    }
+    let date_prefix = format!(
+        "{:04}-{:02}-{:02}",
+        rela.0.year(),
+        rela.0.month(),
+        rela.0.day()
+    );
+
     let file_title = md.name_stem;
 
     let out = outdir.join(format!("{date_prefix}-{file_title}.md"));
 
-    /* Specify the yaml header*/
-    let text_title;
-    match yaml_hdr.title {
-        Some(title) => {
-            text_title = title;
-        }
-        None => no_title_tag!(input),
-    }
+    let text_title = front_matter.title;
 
     let mut root_map = Mapping::new();
 
@@ -184,7 +162,7 @@ pub fn mapping(input: &Path, outdir: &Path) -> Result<()> {
     //     )
     // );
 
-    let cats = map_tags_to_cats(&yaml_hdr.tags);
+    let cats = map_tags_to_cats(&front_matter.tags);
     let cats_value = cats
         .into_iter()
         .map(|cat| Value::String(format!("{cat:?}").to_lowercase()))
@@ -344,6 +322,56 @@ fn center_img(text: &str) -> Result<String> {
             x => Event::End(x),
         },
         e => e,
+    });
+
+    let mut cache = String::new();
+    push_md(parser, &mut cache).unwrap();
+
+    Ok(cache)
+}
+
+
+/// Map inner ./xx.md to <p>"yyy"<a href="{{site.url}}/{cat}/xx.html"></p>
+///
+/// Indeed just url
+fn map_relative_md_ref<P: AsRef<Path>>(text: &str, basedir: P) -> Result<String> {
+    let parser = Parser::new_ext(text, Options::all());
+
+    let parser = parser.map(|event| {
+        if let Event::End(ref tag) = event {  // only end matter for md impl
+            if let Tag::Link(link_type, url, title) = tag {
+                if let LinkType::Inline = link_type {
+
+                    let mut url = url.clone();
+                    let p = PathBuf::from(url.clone().into_string());
+
+                    if let Some(ext) = p.extension() {
+                        if ext == OsStr::new("md") || ext == OsStr::new("markdown") {
+                            // read md
+                            let refmd = Markdown::from_path(
+                                basedir.as_ref().join(&p)
+                            ).unwrap();
+
+                            let cats = map_tags_to_cats(&refmd.front_matter.tags);
+
+                            let newp = format!(
+                                "{{{{site.url }}}}/{}/{}.html",  // double brace for escape
+                                cats[0],
+                                p.file_stem().unwrap().to_str().unwrap()
+                            );
+
+                            url = CowStr::Boxed (
+                                newp.into_boxed_str()
+                            );
+                        }
+                    }
+
+                    return Event::End(Tag::Link(link_type.clone(), url, title.clone()));
+                }
+            }
+        }
+
+        event
     });
 
     let mut cache = String::new();

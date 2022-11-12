@@ -57,7 +57,7 @@ exclude:
   - README.md
   - migrate_doc
   - publish_site
-  - convmdblog
+  - convmdblog/
 
 
 permalink: /:categories/:title:output_ext
