@@ -1,5 +1,6 @@
 use std::ffi::OsStr;
 use std::fmt::Display;
+use std::hash::Hash;
 use std::path::{Path, PathBuf};
 use std::{collections::HashMap, fs};
 
@@ -10,6 +11,7 @@ use lol_html::{element, rewrite_str, RewriteStrSettings};
 use pulldown_cmark::LinkType;
 use pulldown_cmark::{md::push_md, CowStr, Event, Options, Parser, Tag};
 use serde_yaml::{Mapping, Value};
+use indexmap::IndexSet;
 
 use crate::{
     aux::{shorten_path, Result},
@@ -45,7 +47,8 @@ lazy_static! {
             "hy",
             "python",
             "compiler",
-            "llvm"
+            "llvm",
+            "rust"
         ];
         iter.push((Cat::Lang, lang));
 
@@ -84,7 +87,7 @@ lazy_static! {
 //// Structure && Enumeration
 
 /// Category
-#[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd)]
 #[non_exhaustive]
 enum Cat {
     Algs,
@@ -105,6 +108,11 @@ impl Display for Cat {
     }
 }
 
+impl Hash for Cat {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        state.write_str(self.to_string().as_str())
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -163,8 +171,10 @@ pub fn mapping(input: &Path, outdir: &Path) -> Result<()> {
     // );
 
     let cats = map_tags_to_cats(&front_matter.tags);
-    let cats_value = cats
+
+    let cats_value: Vec<Value> = cats[..1]
         .into_iter()
+        .cloned()
         .map(|cat| Value::String(format!("{cat:?}").to_lowercase()))
         .collect();
 
@@ -189,23 +199,22 @@ pub fn mapping(input: &Path, outdir: &Path) -> Result<()> {
 //// Assistant Function
 
 fn map_tags_to_cats<S: AsRef<str>>(tags: &[S]) -> Vec<Cat> {
-    let mut catopt = None;
+    let mut cats = IndexSet::new();
 
     for tag in tags {
         let tag = tag.as_ref().trim().to_lowercase();
 
         if let Some(cat) = TAG_TO_CAT_MAP.get(tag.as_str()) {
-            if let Some(ref _cat) = catopt {
-                if _cat != cat {
-                    unreachable!("Multiple Category found! {cat:?}, {_cat:?}");
-                }
-            } else {
-                catopt = Some(*cat);
-            }
+            cats.insert(*cat);
         }
     }
 
-    vec![catopt.unwrap_or_default()]
+    if cats.is_empty() {
+        cats.insert(Cat::Oth);
+    }
+
+    cats.into_iter().collect()
+
 }
 
 
@@ -348,8 +357,12 @@ fn map_relative_md_ref<P: AsRef<Path>>(text: &str, basedir: P) -> Result<String>
                     if let Some(ext) = p.extension() {
                         if ext == OsStr::new("md") || ext == OsStr::new("markdown") {
                             // read md
+                            let refp = basedir.as_ref().join(&p);
+
+                            assert!(refp.exists(), "{refp:?} doesn't exist!");
+
                             let refmd = Markdown::from_path(
-                                basedir.as_ref().join(&p)
+                                refp
                             ).unwrap();
 
                             let cats = map_tags_to_cats(&refmd.front_matter.tags);

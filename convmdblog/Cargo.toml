@@ -15,6 +15,7 @@ serde_with = "2.0.1"
 clap = { version = "^3", features = ["derive"] }
 clap_complete = "3.1.1"
 shellexpand = "2.1"
+indexmap = "1.9.1"
 # either = "1.6.1"
 pathdiff = "0.2.1"
 pulldown-cmark-m6 = { git = "https://github.com/minghu6/pulldown-cmark.git" }
