@@ -99,7 +99,7 @@ a {
 
     &:hover {
         color: var(--c-linkHover);
-        text-decoration: none;
+        text-decoration: none !important;
     }
 
     &:active {
@@ -118,7 +118,6 @@ table {
     th,
     td {
         padding: .25rem;
-        border: 1px dashed var(--c-tableBorder);
     }
 }
 

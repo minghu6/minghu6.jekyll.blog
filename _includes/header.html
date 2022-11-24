@@ -1,11 +1,13 @@
 <div class="header">
     {% include breadcrumb.html %}
 
-    <button id="menuToggle" class="">
-        <div></div>
-        <div></div>
-        <div></div>
-    </button>
+    {% if page.layout != 'post' %}
+        <button id="menuToggle" class="">
+            <div></div>
+            <div></div>
+            <div></div>
+        </button>
+    {% endif %}
 
     <nav class="menu">
         {% unless page.layout == 'post' %}
