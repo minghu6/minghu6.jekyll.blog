@@ -1,17 +1,22 @@
-use std::ffi::OsStr;
-use std::fmt::Display;
-use std::hash::Hash;
-use std::path::{Path, PathBuf};
-use std::{collections::HashMap, fs};
+use std::{
+    collections::HashMap,
+    ffi::OsStr,
+    fmt::Display,
+    fs,
+    hash::Hash,
+    path::{Path, PathBuf},
+};
 
 use chrono::Datelike;
-use lazy_static::lazy_static;
-use lol_html::html_content::ContentType;
-use lol_html::{element, rewrite_str, RewriteStrSettings};
-use pulldown_cmark::LinkType;
-use pulldown_cmark::{md::push_md, CowStr, Event, Options, Parser, Tag};
-use serde_yaml::{Mapping, Value};
 use indexmap::IndexSet;
+use lazy_static::lazy_static;
+use lol_html::{
+    element, html_content::ContentType, rewrite_str, RewriteStrSettings,
+};
+use pulldown_cmark::{
+    md::push_md, CowStr, Event, LinkType, Options, Parser, Tag,
+};
+use serde_yaml::{Mapping, Value};
 
 use crate::{
     aux::{shorten_path, Result},
@@ -214,7 +219,6 @@ fn map_tags_to_cats<S: AsRef<str>>(tags: &[S]) -> Vec<Cat> {
     }
 
     cats.into_iter().collect()
-
 }
 
 
@@ -343,43 +347,49 @@ fn center_img(text: &str) -> Result<String> {
 /// Map inner ./xx.md to <p>"yyy"<a href="{{site.url}}/{cat}/xx.html"></p>
 ///
 /// Indeed just url
-fn map_relative_md_ref<P: AsRef<Path>>(text: &str, basedir: P) -> Result<String> {
+fn map_relative_md_ref<P: AsRef<Path>>(
+    text: &str,
+    basedir: P,
+) -> Result<String> {
     let parser = Parser::new_ext(text, Options::all());
 
     let parser = parser.map(|event| {
-        if let Event::End(ref tag) = event {  // only end matter for md impl
+        if let Event::End(ref tag) = event {
+            // only end matter for md impl
             if let Tag::Link(link_type, url, title) = tag {
                 if let LinkType::Inline = link_type {
-
                     let mut url = url.clone();
                     let p = PathBuf::from(url.clone().into_string());
 
                     if let Some(ext) = p.extension() {
-                        if ext == OsStr::new("md") || ext == OsStr::new("markdown") {
+                        if ext == OsStr::new("md")
+                            || ext == OsStr::new("markdown")
+                        {
                             // read md
                             let refp = basedir.as_ref().join(&p);
 
                             assert!(refp.exists(), "{refp:?} doesn't exist!");
 
-                            let refmd = Markdown::from_path(
-                                refp
-                            ).unwrap();
+                            let refmd = Markdown::from_path(refp).unwrap();
 
-                            let cats = map_tags_to_cats(&refmd.front_matter.tags);
+                            let cats =
+                                map_tags_to_cats(&refmd.front_matter.tags);
 
                             let newp = format!(
-                                "{{{{site.url }}}}/{}/{}.html",  // double brace for escape
+                                "{{{{site.url }}}}/{}/{}.html", // double brace for escape
                                 cats[0],
                                 p.file_stem().unwrap().to_str().unwrap()
                             );
 
-                            url = CowStr::Boxed (
-                                newp.into_boxed_str()
-                            );
+                            url = CowStr::Boxed(newp.into_boxed_str());
                         }
                     }
 
-                    return Event::End(Tag::Link(link_type.clone(), url, title.clone()));
+                    return Event::End(Tag::Link(
+                        link_type.clone(),
+                        url,
+                        title.clone(),
+                    ));
                 }
             }
         }

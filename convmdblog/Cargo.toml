@@ -3,7 +3,6 @@ name = "convmdblog"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 regex = "1"
@@ -19,4 +18,5 @@ indexmap = "1.9.1"
 # either = "1.6.1"
 pathdiff = "0.2.1"
 pulldown-cmark-m6 = { git = "https://github.com/minghu6/pulldown-cmark.git" }
+# pulldown-cmark-m6 = { path = "/home/minghu6/coding/Rust/myprojs/pulldown-cmark" }
 lol_html = "0.3.1"
