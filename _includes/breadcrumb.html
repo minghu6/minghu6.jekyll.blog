@@ -5,7 +5,7 @@
 
     {% if paths.size == 0 or page.layout == 'home' %}
     <!-- index page -->
-    <span>Home</span>
+    <!-- <span>Home</span> -->
 
     {% else %}
 
@@ -14,7 +14,7 @@
     {% if forloop.first %}
     <span>
       <a href="{{ '/' | relative_url }}">
-        Home
+        <img src="/home.png">
       </a>
     </span>
     {% endif %}
@@ -35,7 +35,8 @@
   </section>
 
   <span id="search-wrapper" class="align-items-center">
-    <i class="fas fa-search fa-fw"></i>
+    <!-- <i class="fas fa-search fa-fw"></i> -->
+    <img src="/assets/img/icons/search.png">
     <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off"
       placeholder="Search...">
   </span>

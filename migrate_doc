@@ -7,7 +7,7 @@ FROM_ASSETS_DIR=$DRAFT_HOME/assets
 migrate_doc() {
     trash ./_posts
     (cd ./convmdblog && make build)
-    ./convmdblog/convmdblog $FROM_DOC_DIR
+    RUST_BACKTRACE=1 ./convmdblog/convmdblog $FROM_DOC_DIR
 }
 
 sync_assets() {

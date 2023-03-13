@@ -7,6 +7,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use regex::Regex;
 use chrono::Datelike;
 use indexmap::IndexSet;
 use lazy_static::lazy_static;
@@ -84,6 +85,9 @@ lazy_static! {
 
         map
     };
+
+    static ref REG_MD_REF: Regex = Regex::new(r"^(\S+\.md)(#\S*)?$").unwrap();
+
 }
 
 
@@ -309,31 +313,31 @@ fn center_img(text: &str) -> Result<String> {
                 .into_boxed_str(),
             ))
         }
-        Event::Start(tag) => match tag {
-            Tag::Image(_link_type, url, title) => {
-                if !url.is_empty() {
-                    Event::Html(CowStr::Boxed(
-                        format!(
-                            "<div class=\"sx-center\"><img src=\"{url}\" title=\"{title}\"></div>"
-                        )
-                        .into_boxed_str(),
-                    ))
-                } else {
-                    Event::Start(Tag::Image(_link_type, url, title))
-                }
-            }
-            x => Event::Start(x),
-        },
-        Event::End(tag) => match tag {
-            Tag::Image(_link_type, url, _title) => {
-                if !url.is_empty() {
-                    Event::Text(CowStr::Boxed(format!("").into_boxed_str()))
-                } else {
-                    Event::End(Tag::Image(_link_type, url, _title))
-                }
-            }
-            x => Event::End(x),
-        },
+        // Event::Start(tag) => match tag {
+        //     Tag::Image(_link_type, url, title) => {
+        //         if !url.is_empty() {
+        //             Event::Html(CowStr::Boxed(
+        //                 format!(
+        //                     "<div class=\"sx-center\"><img src=\"{url}\" title=\"{title}\"></div>"
+        //                 )
+        //                 .into_boxed_str(),
+        //             ))
+        //         } else {
+        //             Event::Start(Tag::Image(_link_type, url, title))
+        //         }
+        //     }
+        //     x => Event::Start(x),
+        // },
+        // Event::End(tag) => match tag {
+        //     Tag::Image(_link_type, url, _title) => {
+        //         if !url.is_empty() {
+        //             Event::Text(CowStr::Boxed(format!("").into_boxed_str()))
+        //         } else {
+        //             Event::End(Tag::Image(_link_type, url, _title))
+        //         }
+        //     }
+        //     x => Event::End(x),
+        // },
         e => e,
     });
 
@@ -359,14 +363,26 @@ fn map_relative_md_ref<P: AsRef<Path>>(
             if let Tag::Link(link_type, url, title) = tag {
                 if let LinkType::Inline = link_type {
                     let mut url = url.clone();
-                    let p = PathBuf::from(url.clone().into_string());
 
-                    if let Some(ext) = p.extension() {
+                    let mut md_base = None;
+                    let mut sharp = "";
+
+                    if let Some(cap) = REG_MD_REF.captures(&url) {
+                        md_base = Some(cap.get(1).unwrap().as_str());
+
+                        if let Some(mat) = cap.get(2) {
+                            sharp = mat.as_str();
+                        }
+                    }
+
+                    let p = md_base.map(|base| PathBuf::from(base));
+
+                    if let Some(p_) = p && let Some(ext) = p_.extension() {
                         if ext == OsStr::new("md")
                             || ext == OsStr::new("markdown")
                         {
                             // read md
-                            let refp = basedir.as_ref().join(&p);
+                            let refp = basedir.as_ref().join(&p_);
 
                             assert!(refp.exists(), "{refp:?} doesn't exist!");
 
@@ -376,9 +392,10 @@ fn map_relative_md_ref<P: AsRef<Path>>(
                                 map_tags_to_cats(&refmd.front_matter.tags);
 
                             let newp = format!(
-                                "{{{{site.url }}}}/{}/{}.html", // double brace for escape
+                                "{{{{site.url }}}}/{}/{}.html{}", // double brace for escape
                                 cats[0],
-                                p.file_stem().unwrap().to_str().unwrap()
+                                p_.file_stem().unwrap().to_str().unwrap(),
+                                sharp
                             );
 
                             url = CowStr::Boxed(newp.into_boxed_str());
@@ -401,4 +418,49 @@ fn map_relative_md_ref<P: AsRef<Path>>(
     push_md(parser, &mut cache).unwrap();
 
     Ok(cache)
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::REG_MD_REF;
+
+
+    #[test]
+    fn verify_regex_patten() {
+        /* case-1 */
+
+        let cap = REG_MD_REF.captures("./ABasicDeep.md#整顿");
+
+        assert!(cap.is_some());
+
+        let cap = cap.unwrap();
+
+        assert_eq!(cap.get(0).unwrap().as_str(), "./ABasicDeep.md#整顿");
+        assert_eq!(cap.get(1).unwrap().as_str(), "./ABasicDeep.md");
+        assert_eq!(cap.get(2).unwrap().as_str(), "#整顿");
+
+        /* case-2 */
+
+        let cap = REG_MD_REF.captures("./c_trap.md");
+
+        assert!(cap.is_some());
+
+        let cap = cap.unwrap();
+
+        assert_eq!(cap.len(), 3);
+        assert_eq!(cap.get(1).unwrap().as_str(), "./c_trap.md");
+        assert!(cap.get(2).is_none());
+
+        /* case-3 */
+
+        let cap = REG_MD_REF.captures("ABasicDeep.md#");
+
+        assert!(cap.is_some());
+
+        let cap = cap.unwrap();
+
+        assert_eq!(cap.get(2).unwrap().as_str(), "#");
+
+    }
 }

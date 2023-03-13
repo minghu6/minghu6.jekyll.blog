@@ -33,7 +33,8 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
-logo_img: /minghu6.jpeg
+favicon: "/d2.jpg"
+logo_img: "/d3.jpg"
 copyright: © minghu6
 
 sass:
