@@ -19,6 +19,7 @@ use pulldown_cmark::{
 };
 use serde_yaml::{Mapping, Value};
 
+#[allow(unused_imports)]
 use crate::{
     aux::{shorten_path, Result},
     or2s,
@@ -197,7 +198,7 @@ pub fn mapping(input: &Path, outdir: &Path) -> Result<()> {
     /* Open and write it */
     or2s!(fs::write(&out, format!("---\n{yaml_text}---\n{text}")))?;
 
-    println!("write {}", shorten_path(&out)?.to_string_lossy());
+    // println!("write {}", shorten_path(&out)?.to_string_lossy());
 
     Ok(())
 }
@@ -229,23 +230,23 @@ fn map_tags_to_cats<S: AsRef<str>>(tags: &[S]) -> Vec<Cat> {
 fn map_img_ref<P: AsRef<Path>>(text: &str, imgdir: P) -> Result<String> {
     let imgdir = imgdir.as_ref().to_owned();
 
-    macro_rules! mapdir {
-        ($src:expr) => {{
-            let p = PathBuf::from($src);
-            // let name = file_name(&p).unwrap();
-            let name = p;
+    let mapdir = |src: String| -> String {
+        let mut p = PathBuf::from(src);
 
-            let newsrcp = imgdir.join(name);
-            newsrcp.to_str().unwrap().to_owned()
-        }};
-    }
+        if p.starts_with("../assets") {
+            p = imgdir.join(p.strip_prefix("../").unwrap());
+            // println!("mapping imgdir -> {p:?}",);
+        }
+
+        p.to_str().unwrap().to_owned()
+    };
 
     macro_rules! maptag {
         ($tag:ident) => {
             match $tag {
                 Tag::Image(_link_type, url, _title) => Tag::Image(
                     _link_type,
-                    CowStr::Boxed(mapdir!(url.into_string()).into_boxed_str()),
+                    CowStr::Boxed(mapdir(url.to_string()).into_boxed_str()),
                     _title,
                 ),
                 x => x,
@@ -260,7 +261,7 @@ fn map_img_ref<P: AsRef<Path>>(text: &str, imgdir: P) -> Result<String> {
             let handler_img_src = element!("img[src]", |img| {
                 let src = img.get_attribute("src").unwrap();
 
-                img.set_attribute("src", &mapdir!(src)).unwrap();
+                img.set_attribute("src", &mapdir(src)).unwrap();
 
                 Ok(())
             });
@@ -295,21 +296,22 @@ fn center_img(text: &str) -> Result<String> {
     let parser = parser.map(|event| match event {
         Event::Html(tag) => {
             let handler_img = element!("img[src]", |img| {
-                img.before("<div class=\"sx-center\">", ContentType::Html);
+                img.before("<div class=\"sx-center\">\n", ContentType::Html);
                 img.after("</div>", ContentType::Html);
-
                 Ok(())
             });
 
+            let rewrite_str = rewrite_str(
+                &tag,
+                RewriteStrSettings {
+                    element_content_handlers: vec![handler_img],
+                    ..Default::default()
+                },
+            )
+            .unwrap();
+
             Event::Html(CowStr::Boxed(
-                rewrite_str(
-                    &tag,
-                    RewriteStrSettings {
-                        element_content_handlers: vec![handler_img],
-                        ..Default::default()
-                    },
-                )
-                .unwrap()
+                rewrite_str
                 .into_boxed_str(),
             ))
         }
