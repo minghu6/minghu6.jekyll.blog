@@ -19,6 +19,8 @@ html {
     @include for-size('tablet') {
         font-size: 18px;
     }
+
+    scroll-padding-top: 2rem;
 }
 
 
