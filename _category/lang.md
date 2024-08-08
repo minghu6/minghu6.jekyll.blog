@@ -1,6 +1,6 @@
 ---
 category: [lang]
 hue: var(--c-themeHuePurple)
-title: ProgLang
+title: Language
 description:
 ---
