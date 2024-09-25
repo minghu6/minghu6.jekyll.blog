@@ -14,7 +14,7 @@ html {
     font-family: var(--f-text);
 
     // Root font size. Other sizes are derived from this accroding to variable values.
-    font-size: 16px;
+    font-size: 15px;
 
     @include for-size('tablet') {
         font-size: 18px;
