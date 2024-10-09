@@ -47,6 +47,8 @@ lazy_static! {
 
         // LANG
         let lang = vec![
+            "lang",
+            "language",
             "c",
             "common lisp",
             "php",
