@@ -61,6 +61,11 @@ layout: page
     <div class="post__content">{{ content }}</div>
 
     <div id="toc-wrapper" class="pl-0 pr-4 mb-5 post__toc">
+      <span>
+        <a href="{{ '/' | relative_url }}">
+          <img src="/assets/img/icons/home.png" class="pl-4 pb-4">
+        </a>
+      </span>
       <nav id="toc" data-toggle="toc"></nav>
       <span>
         <a href="{{ page.url }}#">

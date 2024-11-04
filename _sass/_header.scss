@@ -4,20 +4,25 @@
 // Used for page header.
 
 .header{
-    width: 100%;
-    max-width: calc(var(--s-post-content) + 4rem);
+    min-width: max-content;
+    width: calc(var(--s-post-content) + 4rem);
     margin: 0 2rem;
-
-    @include flexbox{
-        flex-direction: column;
-    };
 
     padding-top: 1rem;
 
     #topbar {
+        display: flex;
         width: 100%;
         padding-right: 15px;
         margin-right: auto;
+
+        #topbar-logo {
+            padding-left: 2rem;
+        }
+
+        #search-wrapper {
+            margin: 0 20rem;
+        }
 
         #breadcrumb {
             a:hover {
